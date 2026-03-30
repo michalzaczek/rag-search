@@ -22,6 +22,9 @@ def main() -> None:
 
             for i, result in enumerate(results[:5], start=1):
                 print(f"{i}. {result['title']}")
+
+            print(f"\nFound {len(results)} results")
+
         case _:
             parser.print_help()
 
