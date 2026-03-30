@@ -1,6 +1,6 @@
 import argparse
 
-from core.utils import load_json_file, search_movies
+from core.utils import load_json_file, remove_punctuation, search_movies, tokenize
 
 
 def main() -> None:
@@ -12,19 +12,13 @@ def main() -> None:
 
     args = parser.parse_args()
 
+    query_text = args.query
+
     match args.command:
         case "search":
-            """
-            Searching for: QUERY
-            1. Movie Title 1
-            2. Movie Title 2
-            3. Movie Title 3
-            ...
-            """
-            print(f"Searching for: {args.query}")
+            print(f"Searching for: {query_text}")
             movies = load_json_file("data/movies.json")["movies"]
-            query = args.query.strip().lower()
-            results = search_movies(query, movies)
+            results = search_movies(query_text, movies)
 
             for i, result in enumerate(results[:5], start=1):
                 print(f"{i}. {result['title']}")
