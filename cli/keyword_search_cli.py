@@ -16,6 +16,10 @@ def main() -> None:
     subparsers.add_parser("build", help="Build inverted index")
     subparsers.add_parser("load", help="Load inverted index")
 
+    tf_parser = subparsers.add_parser("tf", help="Get term frequency for a document")
+    tf_parser.add_argument("doc_id", type=int, help="Document ID")
+    tf_parser.add_argument("term", type=str, help="Term to check")
+
     args = parser.parse_args()
 
     index = InvertedIndex()
@@ -45,10 +49,18 @@ def main() -> None:
             index.save()
 
         case "tf":
-            print("Calculating term frequencies...")
             index.load()
-            term = args.term
-            print(f"Term frequency for {term}")
+            if not index.docmap:
+                print("Error: Index not built. Run 'build' command first.")
+                exit(1)
+
+            try:
+                tf_score = index.get_tf(args.doc_id, args.term)
+                print(tf_score)
+
+            except ValueError as e:
+                print(f"Error: {e}")
+                exit(1)
 
         case "search":
             index.load()
