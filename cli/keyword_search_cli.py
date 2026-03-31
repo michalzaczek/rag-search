@@ -13,13 +13,28 @@ def main() -> None:
     search_parser = subparsers.add_parser("search", help="Search movies using BM25")
     search_parser.add_argument("query", type=str, help="Search query")
 
-    build_parser = subparsers.add_parser("build", help="Build inverted index")
+    subparsers.add_parser("build", help="Build inverted index")
+    subparsers.add_parser("load", help="Load inverted index")
 
     args = parser.parse_args()
 
     movies_data = load_json_file("data/movies.json")["movies"]
 
     match args.command:
+
+        case "load":
+            # load the index from disk. If it doesn't exist, just print an error message and exit.
+            print("Loading inverted index...")
+            try:
+                index = InvertedIndex()
+                index.load()
+                print("Inverted index loaded successfully.")
+                movies_data = index.docmap
+                print(f"Loaded {len(movies_data)} movies.")
+            except FileNotFoundError:
+                print("Inverted index not found. Please build it first.")
+                exit(1)
+
         case "build":
             print("Building inverted index...")
 
