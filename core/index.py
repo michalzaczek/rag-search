@@ -1,21 +1,39 @@
+from collections import Counter
 import os
 from core.utils import clean_text
 import pickle
+from typing import Any
 
 
 class InvertedIndex:
     def __init__(self):
-        self.index = {}
-        self.docmap = {}
+        self.index: dict[str, set[int]] = {}
+        self.docmap: dict[int, dict[str, Any]] = {}
+        self.term_frequencies: dict[int, Counter[str]] = {}
 
-    def __add_document(self, doc_id, text):
-        text = clean_text(text)
-        for token in text:
+    def __add_document(self, doc_id: int, text: str) -> None:
+        tokens = clean_text(text)
+
+        self.term_frequencies[doc_id] = Counter(tokens)
+        for token in tokens:
             if token not in self.index:
                 self.index[token] = set()
             self.index[token].add(doc_id)
 
-    def get_documents(self, term):
+    def get_tf(self, doc_id: int, term: str) -> int:
+        tokens = clean_text(term)
+
+        if len(tokens) != 1:
+            raise ValueError(f"Term '{term}' must result in exactly one token.")
+
+        target_token = tokens[0]
+
+        if doc_id in self.term_frequencies:
+            return self.term_frequencies[doc_id].get(target_token, 0)
+
+        return 0
+
+    def get_documents(self, term: str) -> list[int]:
         tokens = clean_text(term)
         if not tokens:
             return []
@@ -37,6 +55,8 @@ class InvertedIndex:
             pickle.dump(self.index, file)
         with open("cache/docmap.pkl", "wb") as file:
             pickle.dump(self.docmap, file)
+        with open("cache/term_frequencies.pkl", "wb") as file:
+            pickle.dump(self.term_frequencies, file)
 
     def load(self):
         try:
@@ -50,3 +70,9 @@ class InvertedIndex:
                 self.docmap = pickle.load(file)
         except FileNotFoundError:
             self.docmap = {}
+
+        try:
+            with open("cache/term_frequencies.pkl", "rb") as file:
+                self.term_frequencies = pickle.load(file)
+        except FileNotFoundError:
+            self.term_frequencies = {}

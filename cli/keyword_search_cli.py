@@ -44,6 +44,12 @@ def main() -> None:
             index.build(movies_data)
             index.save()
 
+        case "tf":
+            print("Calculating term frequencies...")
+            index.load()
+            term = args.term
+            print(f"Term frequency for {term}")
+
         case "search":
             index.load()
             query_text = args.query
