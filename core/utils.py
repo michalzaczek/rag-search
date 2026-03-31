@@ -50,8 +50,8 @@ def search_movies(query: str, movies: list[dict]) -> list[dict]:
         # check if at least one token from the query matches any part of a token from the title
         # if set(query_tokens).intersection(set(movie_title_tokens)):
         #     titles.append(movie)
-        for query_token in query_tokens:
-            if any(query_token in token for token in movie_title_tokens):
+        for qt in query_tokens:
+            if any(qt in token for token in movie_title_tokens):
                 titles.append(movie)
                 break
     return titles
