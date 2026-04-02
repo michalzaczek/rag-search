@@ -1,4 +1,5 @@
 from collections import Counter
+import math
 import os
 from core.utils import clean_text
 import pickle
@@ -15,6 +16,7 @@ class InvertedIndex:
         tokens = clean_text(text)
 
         self.term_frequencies[doc_id] = Counter(tokens)
+
         for token in tokens:
             if token not in self.index:
                 self.index[token] = set()
@@ -32,6 +34,17 @@ class InvertedIndex:
             return self.term_frequencies[doc_id].get(target_token, 0)
 
         return 0
+
+    def get_idf(self, term: str) -> float:
+        tokens = clean_text(term)
+
+        if len(tokens) != 1:
+            raise ValueError(f"Term '{term}' must result in exactly one token.")
+
+        target_token = tokens[0]
+        total_doc_count = len(self.docmap)
+        term_match_doc_count = len(self.index.get(target_token, set()))
+        return math.log((total_doc_count + 1) / (term_match_doc_count + 1))
 
     def get_documents(self, term: str) -> list[int]:
         tokens = clean_text(term)

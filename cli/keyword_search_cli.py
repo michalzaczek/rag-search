@@ -10,12 +10,16 @@ def main() -> None:
         dest="command", required=True, help="Available commands"
     )
 
+    # search command
     search_parser = subparsers.add_parser("search", help="Search movies using BM25")
     search_parser.add_argument("query", type=str, help="Search query")
 
+    # build command
     subparsers.add_parser("build", help="Build inverted index")
+    # load command
     subparsers.add_parser("load", help="Load inverted index")
 
+    # tf command
     tf_parser = subparsers.add_parser("tf", help="Get term frequency for a document")
     tf_parser.add_argument("doc_id", type=int, help="Document ID")
     tf_parser.add_argument("term", type=str, help="Term to check")
@@ -43,13 +47,13 @@ def main() -> None:
         case "build":
             print("Building inverted index...")
 
-            index = InvertedIndex()
             movies_data = load_json_file("data/movies.json")["movies"]
             index.build(movies_data)
             index.save()
 
         case "tf":
             index.load()
+
             if not index.docmap:
                 print("Error: Index not built. Run 'build' command first.")
                 exit(1)
