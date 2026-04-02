@@ -88,6 +88,17 @@ def main() -> None:
                 print(f"Error: {e}")
                 exit(1)
 
+        case "tfidf":
+            index.load()
+            try:
+                tf_idf = index.get_tfidf(args.doc_id, args.term)
+                print(
+                    f"TF-IDF score of '{args.term}' in document '{args.doc_id}': {tf_idf:.2f}"
+                )
+            except ValueError as e:
+                print(f"Error: {e}")
+                exit(1)
+
         case "search":
             index.load()
             query_text = args.query
