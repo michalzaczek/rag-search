@@ -30,6 +30,13 @@ def main() -> None:
     )
     idf_parser.add_argument("term", type=str, help="Term to check")
 
+    # tfidf command
+    tfidf_parser = subparsers.add_parser(
+        "tfidf", help="Get TF-IDF score for a term in a document"
+    )
+    tfidf_parser.add_argument("doc_id", type=int, help="Document ID")
+    tfidf_parser.add_argument("term", type=str, help="Term to check")
+
     args = parser.parse_args()
 
     index = InvertedIndex()
