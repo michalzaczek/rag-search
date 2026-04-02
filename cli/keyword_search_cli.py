@@ -24,6 +24,12 @@ def main() -> None:
     tf_parser.add_argument("doc_id", type=int, help="Document ID")
     tf_parser.add_argument("term", type=str, help="Term to check")
 
+    # idf command
+    idf_parser = subparsers.add_parser(
+        "idf", help="Get inverse document frequency for a term"
+    )
+    idf_parser.add_argument("term", type=str, help="Term to check")
+
     args = parser.parse_args()
 
     index = InvertedIndex()
@@ -62,6 +68,15 @@ def main() -> None:
                 tf_score = index.get_tf(args.doc_id, args.term)
                 print(tf_score)
 
+            except ValueError as e:
+                print(f"Error: {e}")
+                exit(1)
+
+        case "idf":
+            index.load()
+            try:
+                idf_score = index.get_idf(args.term)
+                print(f"Inverse document frequency of '{args.term}': {idf_score:.2f}")
             except ValueError as e:
                 print(f"Error: {e}")
                 exit(1)
