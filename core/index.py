@@ -44,6 +44,24 @@ class InvertedIndex:
         target_token = tokens[0]
         total_doc_count = len(self.docmap)
         term_match_doc_count = len(self.index.get(target_token, set()))
+        return math.log(
+            (total_doc_count - term_match_doc_count + 0.5)
+            / (term_match_doc_count + 0.5)
+            + 1
+        )
+
+    def get_bm25_idf(self, term: str) -> float:
+        # bm25 uses more stable formula
+        # IDF = log((N - df + 0.5) / (df + 0.5) + 1)
+
+        tokens = clean_text(term)
+
+        if len(tokens) != 1:
+            raise ValueError(f"Term '{term}' must result in exactly one token.")
+
+        target_token = tokens[0]
+        total_doc_count = len(self.docmap)
+        term_match_doc_count = len(self.index.get(target_token, set()))
         return math.log((total_doc_count + 1) / (term_match_doc_count + 1))
 
     def get_tfidf(self, doc_id: int, term: str) -> float:
