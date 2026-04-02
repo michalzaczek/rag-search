@@ -1,7 +1,21 @@
 import argparse
+from typing import Callable
 
 from core.index import InvertedIndex
 from core.utils import load_json_file, search_movies
+
+
+def bm25_idf_command(term: str) -> None:
+    index = InvertedIndex()
+    index.load()
+
+    try:
+        bm25idf = index.get_bm25_idf(term)
+        print(f"BM25 IDF score of '{term}': {bm25idf:.2f}")
+
+    except ValueError as e:
+        print(f"Error: {e}")
+        exit(1)
 
 
 def main() -> None:
@@ -36,6 +50,14 @@ def main() -> None:
     )
     tfidf_parser.add_argument("doc_id", type=int, help="Document ID")
     tfidf_parser.add_argument("term", type=str, help="Term to check")
+
+    # bm25idf command
+    bm25_idf_parser = subparsers.add_parser(
+        "bm25idf", help="Get BM25 IDF score for a given term"
+    )
+    bm25_idf_parser.add_argument(
+        "term", type=str, help="Term to get BM25 IDF score for"
+    )
 
     args = parser.parse_args()
 
@@ -81,6 +103,7 @@ def main() -> None:
 
         case "idf":
             index.load()
+
             try:
                 idf_score = index.get_idf(args.term)
                 print(f"Inverse document frequency of '{args.term}': {idf_score:.2f}")
@@ -98,6 +121,10 @@ def main() -> None:
             except ValueError as e:
                 print(f"Error: {e}")
                 exit(1)
+
+        case "bm25idf":
+            index.load()
+            bm25_idf_command(args.term)
 
         case "search":
             index.load()

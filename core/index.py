@@ -44,11 +44,7 @@ class InvertedIndex:
         target_token = tokens[0]
         total_doc_count = len(self.docmap)
         term_match_doc_count = len(self.index.get(target_token, set()))
-        return math.log(
-            (total_doc_count - term_match_doc_count + 0.5)
-            / (term_match_doc_count + 0.5)
-            + 1
-        )
+        return math.log((total_doc_count + 1) / (term_match_doc_count + 1))
 
     def get_bm25_idf(self, term: str) -> float:
         # bm25 uses more stable formula
@@ -62,7 +58,10 @@ class InvertedIndex:
         target_token = tokens[0]
         total_doc_count = len(self.docmap)
         term_match_doc_count = len(self.index.get(target_token, set()))
-        return math.log((total_doc_count + 1) / (term_match_doc_count + 1))
+        numerator = total_doc_count - term_match_doc_count + 0.5
+        denominator = term_match_doc_count + 0.5
+
+        return math.log(numerator / denominator + 1)
 
     def get_tfidf(self, doc_id: int, term: str) -> float:
         tf = self.get_tf(doc_id, term)
