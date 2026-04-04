@@ -100,6 +100,25 @@ def main() -> None:
         case "bm25tf":
             bm25_tf_command(args.doc_id, args.term)
 
+        case "bm25search":
+            index.load()
+            if not index.docmap:
+                print("Error: Index not built. Run 'build' command first.")
+                exit(1)
+
+            query_text = args.query
+            limit_val = args.limit
+
+            results = index.bm25_search(query_text, limit_val)
+
+            if not results:
+                print("No results found.")
+            else:
+                for i, result in enumerate(results, start=1):
+                    doc = result["document"]
+                    score = result["score"]
+                    print(f"{i}. ({doc['id']}) {doc['title']} - Score: {score:.2f}")
+
         case "search":
             index.load()
             query_text = args.query

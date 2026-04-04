@@ -54,4 +54,14 @@ bm25_tf_parser.add_argument(
     "b", type=float, nargs="?", default=BM25_B, help="Tunable BM25 b parameter"
 )
 
+# bm25search
+bm25search_parser = subparsers.add_parser(
+    "bm25search", help="Search movies using full BM25 scoring"
+)
+bm25search_parser.add_argument("query", type=str, help="Search query")
+bm25search_parser.add_argument(
+    "--limit", type=int, default=5, help="Number of results to return"
+)
+
+
 args = parser.parse_args()
