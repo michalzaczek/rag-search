@@ -1,6 +1,6 @@
+from core.constans import BM25_B, BM25_K1
 from core.index import InvertedIndex
 from core.utils import load_json_file, search_movies
-from core.constans import BM25_K1
 from cli.parsers import args, parser
 
 
@@ -17,12 +17,14 @@ def bm25_idf_command(term: str) -> None:
         exit(1)
 
 
-def bm25_tf_command(doc_id: int, term: str) -> None:
+def bm25_tf_command(
+    doc_id: int, term: str, k1: float = BM25_K1, b: float = BM25_B
+) -> None:
     index = InvertedIndex()
     index.load()
 
     try:
-        bm25tf = index.get_bm25_tf(doc_id, term)
+        bm25tf = index.get_bm25_tf(doc_id, term, k1, b)
         print(f"BM25 TF score of '{term}' in document '{doc_id}': {bm25tf:.2f}")
     except ValueError as e:
         print(f"Error: {e}")
