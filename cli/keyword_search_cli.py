@@ -3,6 +3,7 @@ from typing import Callable
 
 from core.index import InvertedIndex
 from core.utils import load_json_file, search_movies
+from core.constans import BM25_K1
 
 
 def bm25_idf_command(term: str) -> None:
@@ -13,6 +14,18 @@ def bm25_idf_command(term: str) -> None:
         bm25idf = index.get_bm25_idf(term)
         print(f"BM25 IDF score of '{term}': {bm25idf:.2f}")
 
+    except ValueError as e:
+        print(f"Error: {e}")
+        exit(1)
+
+
+def bm25_tf_command(doc_id: int, term: str) -> None:
+    index = InvertedIndex()
+    index.load()
+
+    try:
+        bm25tf = index.get_bm25_tf(doc_id, term)
+        print(f"BM25 TF score of '{term}' in document '{doc_id}': {bm25tf:.2f}")
     except ValueError as e:
         print(f"Error: {e}")
         exit(1)
@@ -57,6 +70,16 @@ def main() -> None:
     )
     bm25_idf_parser.add_argument(
         "term", type=str, help="Term to get BM25 IDF score for"
+    )
+
+    # bm25tf command
+    bm25_tf_parser = subparsers.add_parser(
+        "bm25tf", help="Get BM25 TF score for a given document ID and term"
+    )
+    bm25_tf_parser.add_argument("doc_id", type=int, help="Document ID")
+    bm25_tf_parser.add_argument("term", type=str, help="Term to get BM25 TF score for")
+    bm25_tf_parser.add_argument(
+        "k1", type=float, nargs="?", default=BM25_K1, help="Tunable BM25 K1 parameter"
     )
 
     args = parser.parse_args()
@@ -123,8 +146,10 @@ def main() -> None:
                 exit(1)
 
         case "bm25idf":
-            index.load()
             bm25_idf_command(args.term)
+
+        case "bm25tf":
+            bm25_tf_command(args.doc_id, args.term)
 
         case "search":
             index.load()
