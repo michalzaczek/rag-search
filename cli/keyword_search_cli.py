@@ -1,7 +1,7 @@
 from core.constans import BM25_B, BM25_K1
 from core.index import InvertedIndex
 from core.utils import load_json_file, search_movies
-from cli.parsers import args, parser
+from cli.parsers.keyword_search import args, parser
 
 
 def bm25_idf_command(term: str) -> None:
