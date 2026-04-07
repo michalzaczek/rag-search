@@ -1,12 +1,27 @@
 import os
 from sentence_transformers import SentenceTransformer
 import numpy as np
+import json
 
 from core.constans import CACHE_DIR
 
 
-FILENAME = "movie_embeddings.npy"
-FILEPATH = os.path.join(CACHE_DIR, FILENAME)
+EMBEDDINGS_FILENAME = "movie_embeddings.npy"
+EMBEDDINGS_FILEPATH = os.path.join(CACHE_DIR, EMBEDDINGS_FILENAME)
+
+MOVIES_FILENAME = "movies.json"
+MOVIES_FILEPATH = os.path.join(CACHE_DIR, MOVIES_FILENAME)
+
+
+def verify_embeddings():
+    ss = SemanticSearch()
+    with open(MOVIES_FILEPATH, "r", encoding="utf-8") as f:
+        documents = json.load(f)
+    embeddings = ss.load_or_create_embeddings(documents)
+    print(f"Number of docs:   {len(documents)}")
+    print(
+        f"Embeddings shape: {embeddings.shape[0]} vectors in {embeddings.shape[1]} dimensions"
+    )
 
 
 def verify_model():
@@ -47,7 +62,7 @@ class SemanticSearch:
             doc_repr.append(f"{doc['title']}: {doc['description']}")
 
         self.embeddings = self.model.encode(doc_repr, show_progress_bar=True)
-        np.save(FILEPATH, self.embeddings)
+        np.save(EMBEDDINGS_FILEPATH, self.embeddings)
 
         return self.embeddings
 
@@ -58,8 +73,8 @@ class SemanticSearch:
             doc_id = doc["id"]
             self.document_map[doc_id] = doc
 
-        if os.path.exists(FILEPATH):
-            self.embeddings = np.load(FILEPATH)
+        if os.path.exists(EMBEDDINGS_FILEPATH):
+            self.embeddings = np.load(EMBEDDINGS_FILEPATH)
 
         if self.embeddings is not None and len(self.embeddings) == len(documents):
             return self.embeddings
