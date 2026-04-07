@@ -9,4 +9,8 @@ subparsers = parser.add_subparsers(
 # verify command
 subparsers.add_parser("verify", help="Verify by printing the model information.")
 
+# embed_text command
+embed_parser = subparsers.add_parser("embed_text", help="Embed typed text.")
+embed_parser.add_argument("text", type=str, help="Text to embed")
+
 args = parser.parse_args()

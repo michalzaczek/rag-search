@@ -21,7 +21,7 @@ class SemanticSearch:
         self.model = SentenceTransformer("all-MiniLM-L6-v2")
 
     def generate_embedding(self, text):
-        if text.trim() == "":
+        if text.strip() == "":
             raise ValueError("Error: Text cannot be empty")
 
         return self.model.encode(text)
