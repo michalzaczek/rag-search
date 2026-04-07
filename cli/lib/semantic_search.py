@@ -4,24 +4,18 @@ import numpy as np
 import json
 
 from core.constans import CACHE_DIR
+from core.utils import load_json_file
 
 
 EMBEDDINGS_FILENAME = "movie_embeddings.npy"
 EMBEDDINGS_FILEPATH = os.path.join(CACHE_DIR, EMBEDDINGS_FILENAME)
 
-MOVIES_FILENAME = "movies.json"
-MOVIES_FILEPATH = os.path.join(CACHE_DIR, MOVIES_FILENAME)
-
 
 def verify_embeddings():
     ss = SemanticSearch()
-    with open(MOVIES_FILEPATH, "r", encoding="utf-8") as f:
-        documents = json.load(f)
+    documents = load_json_file("data/movies.json")["movies"]
     embeddings = ss.load_or_create_embeddings(documents)
-    print(f"Number of docs:   {len(documents)}")
-    print(
-        f"Embeddings shape: {embeddings.shape[0]} vectors in {embeddings.shape[1]} dimensions"
-    )
+    print(f"{embeddings.shape[0]} vectors in {embeddings.shape[1]} dimensions")
 
 
 def verify_model():

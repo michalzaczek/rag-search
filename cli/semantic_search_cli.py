@@ -14,6 +14,10 @@ def main():
 
         case "embed_text":
             semantic_search.embed_text(args.text)
+
+        case "verify_embeddings":
+            semantic_search.verify_embeddings()
+
         case _:
             parser.print_help()
 

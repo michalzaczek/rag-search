@@ -13,4 +13,11 @@ subparsers.add_parser("verify", help="Verify by printing the model information."
 embed_parser = subparsers.add_parser("embed_text", help="Embed typed text.")
 embed_parser.add_argument("text", type=str, help="Text to embed")
 
+# verify_embeddings command
+subparsers.add_parser(
+    "verify_embeddings",
+    help="Verify embeddings by printing num and dimensions of vectors.",
+)
+
+
 args = parser.parse_args()
