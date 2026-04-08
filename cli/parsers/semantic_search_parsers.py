@@ -23,5 +23,13 @@ subparsers.add_parser(
 embedquery_parser = subparsers.add_parser("embedquery", help="Embed typed query.")
 embedquery_parser.add_argument("query", type=str, help="Query text to embed")
 
+# search command
+search_parser = subparsers.add_parser(
+    "search", help="Search movies using semantic search scoring"
+)
+search_parser.add_argument("query", type=str, help="Search query")
+search_parser.add_argument(
+    "--limit", type=int, default=5, help="Number of results to return"
+)
 
 args = parser.parse_args()
