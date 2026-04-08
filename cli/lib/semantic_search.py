@@ -11,6 +11,14 @@ EMBEDDINGS_FILENAME = "movie_embeddings.npy"
 EMBEDDINGS_FILEPATH = os.path.join(CACHE_DIR, EMBEDDINGS_FILENAME)
 
 
+def embed_query_text(query):
+    ss = SemanticSearch()
+    embedding = ss.generate_embedding(query)
+    print(f"Query: {query}")
+    print(f"First 3 dimensions: {embedding[:3]}")
+    print(f"Shape: {embedding.shape}")
+
+
 def verify_embeddings():
     ss = SemanticSearch()
     documents = load_json_file("data/movies.json")["movies"]
