@@ -56,7 +56,7 @@ class SemanticSearch:
         # Load the model
         self.model = SentenceTransformer("all-MiniLM-L6-v2")
         self.embeddings: np.ndarray | None = None
-        self.documents: list[dict] | None = None
+        self.documents: list[dict] = []
         self.document_map = {}
 
     def generate_embedding(self, text):
@@ -93,3 +93,27 @@ class SemanticSearch:
             return self.embeddings
 
         return self.build_embeddings(documents)
+
+    def search(self, query, limit):
+        if self.embeddings is None:
+            raise ValueError(
+                "No embeddings loaded. Call `load_or_create_embeddings` first."
+            )
+        if not self.documents:
+            raise ValueError(
+                "No documents loaded. Call `load_or_create_embeddings` first."
+            )
+
+        sscore_doc_list = []
+        embedded_query = self.generate_embedding(query)
+        for i in range(len(self.embeddings)):
+            sscore = cosine_similarity(embedded_query, self.embeddings[i])
+            doc = self.documents[i]
+            sscore_doc_list.append((sscore, doc))
+
+        sscore_sorted = sorted(sscore_doc_list, key=lambda x: x[0], reverse=True)
+        sscore_limited = sscore_sorted[:limit]
+        return [
+            {"score": s[0], "title": s[1]["title"], "description": s[1]["description"]}
+            for s in sscore_limited
+        ]
