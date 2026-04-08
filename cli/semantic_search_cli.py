@@ -1,6 +1,5 @@
 #!/usr/bin/env python3
 
-import argparse
 from cli.lib import semantic_search
 from cli.parsers.semantic_search_parsers import args, parser
 from cli.lib.semantic_search import verify_model
@@ -17,6 +16,9 @@ def main():
 
         case "verify_embeddings":
             semantic_search.verify_embeddings()
+
+        case "embedquery":
+            semantic_search.embed_query_text(args.query)
 
         case _:
             parser.print_help()
