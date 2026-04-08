@@ -19,5 +19,9 @@ subparsers.add_parser(
     help="Verify embeddings by printing num and dimensions of vectors.",
 )
 
+# embedquery command
+embedquery_parser = subparsers.add_parser("embedquery", help="Embed typed query.")
+embedquery_parser.add_argument("query", type=str, help="Query text to embed")
+
 
 args = parser.parse_args()
