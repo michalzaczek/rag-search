@@ -32,4 +32,14 @@ search_parser.add_argument(
     "--limit", type=int, default=5, help="Number of results to return"
 )
 
+# chunk command
+chunk_parser = subparsers.add_parser(
+    "chunk",
+    help='Chunk text by grouping n words together into a single string, where n is the "chunk size" parameter.',
+)
+chunk_parser.add_argument("text", type=str, help="Text to chunk")
+chunk_parser.add_argument(
+    "--chunk-size", type=int, default=200, help="Number of words per chunk"
+)
+
 args = parser.parse_args()
