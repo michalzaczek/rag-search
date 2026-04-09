@@ -30,6 +30,23 @@ def main():
                 print(
                     f'{idx}. {movie["title"]} (score: {movie["score"]:.4f})\n{movie["description"]}\n'
                 )
+
+        case "chunk":
+            words = args.text.split()
+            chunk_size = args.chunk_size
+
+            chunks = []
+
+            for i in range(0, len(words), chunk_size):
+                chunk_words = words[i : chunk_size + i]
+                chunk_text = " ".join(chunk_words)
+                chunks.append(chunk_text)
+
+            print(f"Chunking {len(args.text)} characters")
+
+            for idx, chunk in enumerate(chunks, start=1):
+                print(f"{idx}. {chunk}")
+
         case _:
             parser.print_help()
 
