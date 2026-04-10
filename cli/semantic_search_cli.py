@@ -34,11 +34,16 @@ def main():
         case "chunk":
             words = args.text.split()
             chunk_size = args.chunk_size
+            overlap_size = max(0, int(args.overlap))
+            step = chunk_size - overlap_size
+
+            if step <= 0:
+                step = 1
 
             chunks = []
 
-            for i in range(0, len(words), chunk_size):
-                chunk_words = words[i : chunk_size + i]
+            for i in range(0, len(words), step):
+                chunk_words = words[i : i + chunk_size]
                 chunk_text = " ".join(chunk_words)
                 chunks.append(chunk_text)
 

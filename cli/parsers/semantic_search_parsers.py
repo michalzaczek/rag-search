@@ -41,5 +41,11 @@ chunk_parser.add_argument("text", type=str, help="Text to chunk")
 chunk_parser.add_argument(
     "--chunk-size", type=int, default=200, help="Number of words per chunk"
 )
+chunk_parser.add_argument(
+    "--overlap",
+    type=int,
+    default=0,
+    help="Number of words to overlap between consecutive chunks",
+)
 
 args = parser.parse_args()
