@@ -52,6 +52,9 @@ def main():
             for idx, chunk in enumerate(chunks, start=1):
                 print(f"{idx}. {chunk}")
 
+        case "semantic_chunk":
+            pass
+
         case _:
             parser.print_help()
 

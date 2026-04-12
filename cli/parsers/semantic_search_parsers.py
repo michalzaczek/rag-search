@@ -48,4 +48,20 @@ chunk_parser.add_argument(
     help="Number of words to overlap between consecutive chunks",
 )
 
+# semantic_chunk command
+semantic_chunk_parser = subparsers.add_parser(
+    "semantic_chunk",
+    help="Semantic chunk text by splitting input into individual sentences.",
+)
+semantic_chunk_parser.add_argument("text", type=str, help="Text to chunk")
+semantic_chunk_parser.add_argument(
+    "--max-chunk-size", type=int, default=4, help="Max number of sentences per chunk"
+)
+semantic_chunk_parser.add_argument(
+    "--overlap",
+    type=int,
+    default=0,
+    help="Number of sentences to overlap between consecutive chunks",
+)
+
 args = parser.parse_args()
