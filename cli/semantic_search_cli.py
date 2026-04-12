@@ -1,9 +1,30 @@
 #!/usr/bin/env python3
 
+import re
 from cli.lib import semantic_search
 from cli.parsers.semantic_search_parsers import args, parser
 from cli.lib.semantic_search import SemanticSearch, verify_model
 from core.utils import load_json_file
+
+
+def chunk_text(text_arr, chunk_size, overlap):
+    overlap_size = max(0, int(overlap))
+    step = chunk_size - overlap_size
+
+    if step <= 0:
+        step = 1
+
+    chunks = []
+
+    for i in range(0, len(text_arr), step):
+        chunk_arr = text_arr[i : i + chunk_size]
+        chunk_text = " ".join(chunk_arr)
+        chunks.append(chunk_text)
+
+        if i + chunk_size >= len(text_arr):
+            break
+
+    return chunks
 
 
 def main():
@@ -33,19 +54,7 @@ def main():
 
         case "chunk":
             words = args.text.split()
-            chunk_size = args.chunk_size
-            overlap_size = max(0, int(args.overlap))
-            step = chunk_size - overlap_size
-
-            if step <= 0:
-                step = 1
-
-            chunks = []
-
-            for i in range(0, len(words), step):
-                chunk_words = words[i : i + chunk_size]
-                chunk_text = " ".join(chunk_words)
-                chunks.append(chunk_text)
+            chunks = chunk_text(words, args.chunk_size, args.overlap)
 
             print(f"Chunking {len(args.text)} characters")
 
@@ -53,7 +62,13 @@ def main():
                 print(f"{idx}. {chunk}")
 
         case "semantic_chunk":
-            pass
+            sentences = re.split(r"(?<=[.!?])\s+", args.text)
+            chunks = chunk_text(sentences, args.max_chunk_size, args.overlap)
+
+            print(f"Semantically chunking {len(args.text)} characters")
+
+            for idx, chunk in enumerate(chunks, start=1):
+                print(f"{idx}. {chunk}")
 
         case _:
             parser.print_help()
